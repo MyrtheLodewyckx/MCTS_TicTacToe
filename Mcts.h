@@ -1,4 +1,3 @@
-//https://medium.com/@_michelangelo_/monte-carlo-tree-search-mcts-algorithm-for-dummies-74b2bae53bfa
 #pragma once
 #include <math.h>
 #include <vector>
@@ -27,11 +26,10 @@ class Mcts_node
 
 public:
 
-	 Mcts_node(MCTGame* game, bool done, Mcts_node* parent,GameState* pState, int actionIdx);
+	Mcts_node(MCTGame* game, bool done, Mcts_node* parent,GameState* pState, int actionIdx);
 	~Mcts_node();
 
 	void Explore();
-	
 	int GetActionIdx() { return m_ActionIndex; }
 
 	Mcts_node* GetNext();
