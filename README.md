@@ -35,3 +35,18 @@ For this I seperated the game and the tree so I can use the algorithm for other 
 Aside from this I made three classes necessairy for the game.
 
 ![GameClasses](https://user-images.githubusercontent.com/99867927/213276879-a27dfb8c-5b88-4449-b93c-ada2c8c91c4a.png)
+
+Since a node looks like this:
+
+![Node](https://user-images.githubusercontent.com/99867927/213553580-8737f2d3-430c-475e-88e5-989c0817bbbd.PNG)
+
+The 'Exploration()' function will go through the four steps previously mentioned. After we've gone through all the iterations, the user can call the 'GetNext()' function to get the next appropriate action. 
+
+Essentially the tree could be used like this:
+
+![image](https://user-images.githubusercontent.com/99867927/213554422-8df08ea1-2b54-4fd4-930d-1ef486c3016e.png)
+
+
+##### Game engine created by the brilliant Kevin Hoefman
+
+
