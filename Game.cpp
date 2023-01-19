@@ -44,7 +44,7 @@ void Game::Update( float elapsedSec )
 
 		m_pMctsNode = new Mcts_node(m_pTicTacToe,false, nullptr, m_pTicTacToe->m_pState, -1);
 
-		for (int i{ 0 }; i < 1000; ++i)
+		for (int i{ 0 }; i < g_Iterations; ++i)
 		{
 			m_pMctsNode->Explore();
 		}

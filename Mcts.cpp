@@ -179,7 +179,6 @@ int Mcts_node::Rollout()
 
 	while (!state->IsTerminal())
 	{
-
 		auto actions = m_pGame->GetAvailableActionIdxs(state);
 		actionIdx = actions[rand() % actions.size()];
 		state = m_pGame->SampleAction(actionIdx, state,true);
@@ -197,7 +196,14 @@ Mcts_node* Mcts_node::GetNext()
 		return nullptr;
 	}
 
+	for (int i{}; i < m_pChildren.size(); ++i)
+	{
+		if (m_pChildren[i]->m_TimesVisited != 0 && m_pChildren[i]->m_TimesVisited == m_pChildren[i]->m_Wins)
+			return m_pChildren[i];
+	}
+
 	auto l = [](Mcts_node* n1, Mcts_node* n2)->bool { return(n1->m_UTC < n2->m_UTC); };
+
 	auto r = std::max_element(m_pChildren.begin(), m_pChildren.end(), l);
 
 	int i = (int)std::distance(m_pChildren.begin(), r);
