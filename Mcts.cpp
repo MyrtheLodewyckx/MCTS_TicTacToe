@@ -4,29 +4,54 @@
 #include <iostream>
 
 
-Mcts_node::Mcts_node(MCTGame* game, bool done, Mcts_node* parent, GameState* state, int actionIdx)
-	:m_pGame(game), 
+Mcts_node::Mcts_node(MCTGame* game, bool done, Mcts_node* parent, GameState* pState, int actionIdx)
+	:m_pGame(game),
 	m_Done(done),
 	m_pParent(parent),
-	m_pGameState(state),
-	m_ActionIndex(actionIdx)
+	m_ActionIndex(actionIdx),
+	m_pGameState(pState)
 {
+	if (g_AllStates.capacity() != g_Iterations)
+		g_AllStates.reserve(g_Iterations);
+
+	if (g_AllNodes.capacity() != g_Iterations)
+	g_AllNodes.reserve(g_Iterations);
+	g_AllNodes.push_back(this);
 }
 
 Mcts_node::~Mcts_node()
 {
-	/*for (auto child : m_pChildren)
-	{
-		delete child;
-		child = nullptr;
-	}
-	delete m_pGame;
-	m_pGame = nullptr;
-	delete m_pGameState;
-	m_pGameState = nullptr;
 
-	delete m_pParent;
-	m_pParent = nullptr;*/
+	if (g_HasDestructorBeenCalled)
+		return;
+
+	g_HasDestructorBeenCalled = true;
+
+	if (g_AllNodes.size() != 0)
+	{
+		for (int i{}; i < g_AllNodes.size(); ++i)
+		{
+			if (!g_AllNodes[i])
+				continue;
+			if (g_AllNodes[i] == this)
+				continue;
+
+			delete g_AllNodes[i];
+			g_AllNodes[i] = nullptr;
+		}
+		g_AllNodes.clear();
+	}
+	if (g_AllStates.size() != 0)
+	{
+		for (int i{}; i < g_AllStates.size(); ++i)
+		{
+			delete g_AllStates[i];
+			g_AllStates[i] = nullptr;
+		}
+		g_AllStates.clear();
+		g_HasDestructorBeenCalled = false;
+	}
+
 }
 
 float Mcts_node::CalculateUCT()
@@ -70,7 +95,9 @@ void Mcts_node::CreateChild()
 
 		if (!hasActionBeenTaken)
 		{
-			m_pChildren.push_back(new Mcts_node(m_pGame, m_Done, this, m_pGame->SampleAction(actions[i], m_pGameState), actions[i]));
+			auto pState = m_pGame->SampleAction(actions[i], m_pGameState);
+			g_AllStates.push_back(pState);
+			m_pChildren.push_back(new Mcts_node(m_pGame, m_Done, this, pState, actions[i]));
 			if (actions.size() - m_pChildren.size() == 0)
 				m_Done = true;
 
@@ -140,17 +167,25 @@ void Mcts_node::Explore()
 
 int Mcts_node::Rollout()
 {
-	GameState* state = m_pGameState;
+	if (m_pGameState->IsTerminal())
+		return m_pGameState->GetValue();
+
+	GameState* state{};
 	int actionIdx{};
+
+	auto actions = m_pGame->GetAvailableActionIdxs(m_pGameState);
+	actionIdx = actions[rand() % actions.size()];
+	state = m_pGame->SampleAction(actionIdx, m_pGameState);
 
 	while (!state->IsTerminal())
 	{
+
 		auto actions = m_pGame->GetAvailableActionIdxs(state);
 		actionIdx = actions[rand() % actions.size()];
-		state = m_pGame->SampleAction(actionIdx, state);
+		state = m_pGame->SampleAction(actionIdx, state,true);
 	}
 
-
+	g_AllStates.push_back(state);
 	return state->GetValue();
 }
 

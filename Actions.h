@@ -24,7 +24,8 @@ class MCTGame
 public:
 	virtual std::vector<int> GetAvailableActionIdxs(GameState* pState) = 0;
 	virtual std::vector<int> GetAvailableActionIdxs() = 0;
-	virtual GameState* SampleAction(int actionIdx, GameState* pState) = 0;
+	virtual GameState* SampleAction(int actionIdx, GameState* pState, bool deleteOldState = false) = 0;
 
 	virtual GameState* GetGameState() = 0;
+	virtual ~MCTGame() = default;
 };

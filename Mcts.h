@@ -6,7 +6,6 @@
 
 class Mcts_node
 {
-
 	std::vector<Mcts_node*> m_pChildren;
 
 	int m_Wins{};
@@ -28,7 +27,7 @@ class Mcts_node
 
 public:
 
-	Mcts_node(MCTGame* game, bool done, Mcts_node* parent, GameState* state, int actionIdx);
+	 Mcts_node(MCTGame* game, bool done, Mcts_node* parent,GameState* pState, int actionIdx);
 	~Mcts_node();
 
 	void Explore();
@@ -37,4 +36,8 @@ public:
 
 	Mcts_node* GetNext();
 };
- 
+
+static const int g_Iterations{ 1000 };
+static std::vector<Mcts_node*> g_AllNodes{};
+static std::vector<GameState*> g_AllStates{};
+static bool g_HasDestructorBeenCalled{false};

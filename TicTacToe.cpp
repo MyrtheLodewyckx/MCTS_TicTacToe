@@ -48,6 +48,70 @@ TicTacToe::~TicTacToe()
 
 	delete m_pWinTexture;
 	m_pWinTexture = nullptr;
+
+	delete m_pRetryButton;
+	m_pRetryButton = nullptr;
+}
+
+TicTacToe& TicTacToe::operator=(const TicTacToe& t)
+{
+	if (this != &t)
+	{
+		delete m_pState;
+
+		m_pState = new TicTacToeState(*t.m_pState);
+		m_BottomLeftPos = t.m_BottomLeftPos;
+		m_CellHeight = t.m_CellHeight;
+		m_CellWidth = t.m_CellWidth;
+		m_Cols = t.m_Cols;
+		m_Rows = t.m_Rows;
+		m_ResetButtonPos = t.m_ResetButtonPos;
+	}
+	return *this;
+}
+
+TicTacToe::TicTacToe(const TicTacToe& t)
+	:m_BottomLeftPos(t.m_BottomLeftPos),
+	m_CellHeight(t.m_CellHeight),
+	m_CellWidth(t.m_CellWidth),
+	m_Cols(t.m_Cols),
+	m_Rows(t.m_Rows),
+	m_ResetButtonPos(t.m_ResetButtonPos)
+{
+	m_pState = new TicTacToeState(*t.m_pState);
+	m_pCrossTexture = new Texture("Resources/Cross.png");
+	m_pCircleTexture = new Texture("Resources/Circle.png");
+	m_pLoseTexture = new Texture("Resources/Lose.png");
+	m_pWinTexture = new Texture("Resources/Win.png");
+	m_pDrawTexture = new Texture("Resources/Draw.png");
+	m_pRetryButton = new Texture("Resources/Retry.png");
+}
+
+TicTacToe& TicTacToe::operator=(TicTacToe&& t) noexcept
+{
+	if (this != &t)
+	{
+		delete m_pState;
+
+		m_pState = new TicTacToeState(*t.m_pState);
+		m_BottomLeftPos = t.m_BottomLeftPos;
+		m_CellHeight = t.m_CellHeight;
+		m_CellWidth = t.m_CellWidth;
+		m_Cols = t.m_Cols;
+		m_Rows = t.m_Rows;
+		m_ResetButtonPos = t.m_ResetButtonPos;
+
+		t.m_BottomLeftPos = { 0.f,0.f };
+		t.m_CellHeight = 0.f;
+		t.m_CellHeight = 0.f;
+		t.m_CellWidth = 0.f;
+		t.m_Cols = 0;
+		t.m_Rows = 0;
+		t.m_ResetButtonPos = { 0.f,0.f };
+		delete t.m_pState;
+		t.m_pState = nullptr;
+	}
+	return *this;
 }
 
 void TicTacToe::Render(const Window& window)
@@ -104,12 +168,23 @@ std::vector<int> TicTacToe::GetAvailableActionIdxs(GameState* pState)
 		}
 	}
 
+
+
 	return m_Actions;
 }
 
 std::vector<int> TicTacToe::GetAvailableActionIdxs()
 {
-	return GetAvailableActionIdxs(m_pState);
+	std::vector<int> m_Actions{};
+	for (int i{ 0 }; i < (int)m_pState->m_Cells.size(); ++i)
+	{
+		if (m_pState->m_Cells[i].m_CellState == CellState::empty)
+		{
+			m_Actions.push_back(i);
+		}
+	}
+
+	return m_Actions;
 }
 
 void TicTacToe::TakeAction(int cellIdx)
@@ -134,12 +209,19 @@ void TicTacToe::TakeAction(int cellIdx)
 
 }
 
-GameState* TicTacToe::SampleAction(int actionIdx, GameState* pState)
+GameState* TicTacToe::SampleAction(int actionIdx, GameState* pState, bool deleteOldState)
 {
 	auto pTicTacToeState = static_cast<TicTacToeState*>(pState);
 	TicTacToeState* s = new TicTacToeState();
+
 	s->m_Cells = pTicTacToeState->m_Cells;
 	s->m_IsEnemyTurn = pTicTacToeState->m_IsEnemyTurn;
+
+	if (deleteOldState)
+	{
+		delete pTicTacToeState;
+		pTicTacToeState = nullptr;
+	}
 
 	cell& cell = s->m_Cells[actionIdx];
 
@@ -447,4 +529,43 @@ void TicTacToe::Reset()
 	m_pState->SetValue(0);
 	m_pState->m_IsDone = false;
 	m_pState->m_IsEnemyTurn = true;
+}
+
+TicTacToeState& TicTacToeState::operator=(const TicTacToeState& t)
+{
+	if (this != &t)
+	{
+		m_Cells = t.m_Cells;
+		m_IsDone = t.m_IsDone;
+		m_IsEnemyTurn = t.m_IsEnemyTurn;
+		m_Value = t.m_Value;
+	}
+
+	return *this;
+}
+
+TicTacToeState::TicTacToeState(const TicTacToeState& t)
+	:m_Cells(t.m_Cells),
+	m_IsDone(t.m_IsDone),
+	m_IsEnemyTurn(t.m_IsEnemyTurn)
+{
+}
+
+TicTacToeState& TicTacToeState::operator=(TicTacToeState&& t) noexcept
+{
+	if (this != &t)
+	{
+		m_Cells = t.m_Cells;
+		m_IsDone = t.m_IsDone;
+		m_IsEnemyTurn = t.m_IsEnemyTurn;
+		m_Value = t.m_Value;
+
+
+		t.m_Cells = {};
+		t.m_IsDone = false;
+		t.m_IsEnemyTurn = false;
+		t.m_Value = 0;
+	}
+
+	return *this;
 }

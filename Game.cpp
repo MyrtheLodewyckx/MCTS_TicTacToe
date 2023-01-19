@@ -37,9 +37,12 @@ void Game::Update( float elapsedSec )
 	if (m_pTicTacToe->GetIsEnemyTurn() && !m_pTicTacToe->GetIsDone())
 	{
 		if (m_pMctsNode)
+		{
 			delete m_pMctsNode;
+			m_pMctsNode = nullptr;
+		}
 
-		m_pMctsNode = new Mcts_node(m_pTicTacToe,false, nullptr, m_pTicTacToe->GetGameState(), -1);
+		m_pMctsNode = new Mcts_node(m_pTicTacToe,false, nullptr, m_pTicTacToe->m_pState, -1);
 
 		for (int i{ 0 }; i < 1000; ++i)
 		{
