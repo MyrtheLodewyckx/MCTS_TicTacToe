@@ -53,7 +53,7 @@ Essentially the tree could be used like this:
 
 ### Check this out too
 
-https://vgarciasc.github.io/mcts-viz/
-https://www.youtube.com/watch?v=onBYsen2_eA
-https://www.youtube.com/watch?v=Fbs4lnGLS8M&t=637s
+- https://vgarciasc.github.io/mcts-viz/
+- https://www.youtube.com/watch?v=onBYsen2_eA
+- https://www.youtube.com/watch?v=Fbs4lnGLS8M&t=637s
 
