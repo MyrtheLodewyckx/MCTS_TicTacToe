@@ -13,7 +13,7 @@ It does so in 4 steps:
 Starting from a certain state this algorithm will find the best next step by simulating it's options and weighing the value of each outcome.
 
 ### Selection
-This is where you choose which node you'd want to explore, by looking at which one is most promising. This is done by not only looking at which one has had the most 'wins' in this case, but also by looking at which ones havent been visited as much yet. There might be some hidden potential there. Therefore I used the UCT formula. This gives me a value I can actually compare.
+This is where you choose which node you'd want to explore, by looking at which one is most promising. This is done by not only looking at which one has had the most 'wins' in this case, but also by looking at which ones havent been visited as much yet. There might be some hidden potential there. Therefore I used the UCT (Upper Confidence Bound 1 applied to trees) formula. This gives me a value I can actually compare.
 
 ![UCT](https://user-images.githubusercontent.com/99867927/213555417-6e5fa9d5-b59f-46b0-b0d0-ce74f4d98be9.PNG)
 
